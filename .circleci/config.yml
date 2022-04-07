@@ -1,0 +1,42 @@
+version: 2.1
+
+workflows:
+  build-deploy:
+    jobs:
+      - build:
+          context: environment
+
+jobs:
+  build:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - setup_remote_docker:
+          version: 20.10.11
+      - checkout
+      - run: 
+            name: "Setup custom environment variables"
+            command: |
+                      echo 'export MY_VERSION="1.0"' >> $BASH_ENV
+                      echo "export MY_HASH=$(git --no-pager log --pretty=format:\"%h\" -1)" >> $BASH_ENV
+                      echo 'export DOCKER_USERNAME=${DOCKER_USERNAME}' >> $BASH_ENV
+                      echo 'export DOCKER_PASSWD=${DOCKER_PASSWD}' >> $BASH_ENV
+                      echo 'export CIRCLE_PROJECT_REPONAME=${CIRCLE_PROJECT_REPONAME}' >> $BASH_ENV
+                      echo 'export CIRCLE_PROJECT_USERNAME=${CIRCLE_PROJECT_USERNAME}' >> $BASH_ENV
+      - run: 
+            name: "Setup Buildx Environment"
+            command: |
+                      docker context create builder
+                      docker buildx create builder --use
+      - run: 
+            name: "Logging in to DockerHub" 
+            command: echo $DOCKER_PASSWD | docker login -u $DOCKER_USERNAME --password-stdin 
+      - run: 
+            name: "Building Container"
+            command: |
+                      docker buildx build --push --platform linux/arm64,linux/amd64 \
+                      --tag ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:latest \
+                      --tag ${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}:${MY_VERSION} \
+                      --build-arg VCS_REF=${MY_HASH} \
+                      --build-arg VERSION=${MY_VERSION} .
+            
