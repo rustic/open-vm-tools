@@ -9,10 +9,10 @@ workflows:
 jobs:
   build:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:current
     steps:
       - setup_remote_docker:
-          version: 20.10.11
+          version: 20.10.18
       - checkout
       - run: 
             name: "Setup custom environment variables"
@@ -26,8 +26,9 @@ jobs:
       - run: 
             name: "Setup Buildx Environment"
             command: |
-                      docker context create builder
-                      docker buildx create builder --use
+                      docker context create buildx-build
+                      docker buildx create --use buildx-build
+                      docker run --privileged --rm tonistiigi/binfmt --install all
       - run: 
             name: "Logging in to DockerHub" 
             command: echo $DOCKER_PASSWD | docker login -u $DOCKER_USERNAME --password-stdin 
