@@ -1,6 +1,6 @@
 # open-vm-tools
 
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/rustic/open-vm-tools/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/rustic/open-vm-tools/tree/master)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/rustic/open-vm-tools/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/rustic/open-vm-tools/tree/main)
 [![Image Size](https://img.shields.io/docker/image-size/rustic/open-vm-tools/latest)](https://hub.docker.com/repository/docker/rustic/open-vm-tools)
 [![License](https://img.shields.io/github/license/rustic/open-vm-tools)](https://hub.docker.com/repository/docker/rustic/open-vm-tools)
 
